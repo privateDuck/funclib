@@ -5,10 +5,13 @@
 #include "tokenizer.hpp"
 #include "parser.hpp"
 #include "printer.hpp"
+#include "func_system.hpp"
 
 int main()
 {
-    funclib::Tokenizer tok("sin(-12) + 3(2)^2");
+    funclib::FuncSystem sys;
+    sys.CreateFunction("f(x,y,z:a)", "x+a*b");
+    /*funclib::Tokenizer tok("sin(-12) + 3(2)^2");
     auto toks = tok.GetTokens();
     funclib::Parser parser;
     
@@ -19,7 +22,7 @@ int main()
     std::cout << '\n';
     for (const auto& t : ptkn) {
         std::cout << t << '\n';
-    }
+    }*/
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

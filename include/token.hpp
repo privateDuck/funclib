@@ -27,6 +27,7 @@ namespace funclib {
 		TOKEN_OP_SUB,
 		TOKEN_OP_UN_NEG,
 		TOKEN_OP_UN_POS,
+		TOKEN_COLON,
 		TOKEN_EOF
 	};
 
@@ -81,14 +82,16 @@ namespace funclib {
 		inline bool IsNativeFunction() const { return type == TOKEN_NATIVEFUNC; }
 		inline bool IsFunction() const { return type == TOKEN_FUNC || type == TOKEN_NATIVEFUNC; }
 		inline bool IsNumeric() const { return type == TOKEN_LITERAL; }
-		inline bool IsOperator() const { return type > TOKEN_ENDLINE && type < TOKEN_EOF; }
+		inline bool IsOperator() const { return type > TOKEN_ENDLINE && type < TOKEN_COLON; }
 		inline bool IsBinaryOP() const { return type > TOKEN_ENDLINE && type < TOKEN_OP_UN_NEG; }
-		inline bool IsUnaryOP() const { return type > TOKEN_OP_SUB && type < TOKEN_EOF; }
+		inline bool IsUnaryOP() const { return type > TOKEN_OP_SUB && type < TOKEN_COLON; }
 
 		inline bool IsLP() const { return type == TOKEN_LP; }
 		inline bool IsRP() const { return type == TOKEN_RP; }
 
 		inline void SetToUnary() { type = type == TOKEN_OP_ADD ? TOKEN_OP_UN_POS : TOKEN_OP_UN_NEG; }
+		inline void SetToFunc() { type = TOKEN_FUNC; }
+		inline void SetToNativeFunc() { type = TOKEN_NATIVEFUNC; }
 
 		inline int GetPrecedence() const { return precedence; }
 		inline bool IsLeftAssoc() const { return IsOperator() && type != TOKEN_OP_EXP; }
@@ -106,11 +109,11 @@ namespace funclib {
 
 	struct Token {
 	public:
-		explicit Token() : type(TOKEN_EOF), arg(-2) {}
+		Token() : type(TOKEN_EOF), arg(-2) { data.address = 0; }
 		~Token() {}
 
 		// FUNCTION TOKEN
-		explicit Token(uint64_t address, int argc , _ttype type) : type(type), arg(argc) { data.address = address; }
+		Token(uint64_t address, int argc , _ttype type) : type(type), arg(argc) { data.address = address; }
 
 		// VAR/PARAM TOKEN
 		explicit Token(uint64_t address) : type(TOKEN_ID), arg(-1) { data.address = address; }
@@ -119,7 +122,28 @@ namespace funclib {
 		explicit Token(double lvalue) : type(TOKEN_LITERAL), arg(-1) { data.value = lvalue; }
 
 		// OPERATOR TOKEN
-		explicit Token(_ttype type) : type(type), arg(-1) {}
+		Token(char c, bool unary) : arg(-1) {
+			switch (c) {
+			case '+':
+				type = unary ? TOKEN_OP_UN_POS : TOKEN_OP_ADD;
+				break;
+			case '-':
+				type = unary ? TOKEN_OP_UN_NEG : TOKEN_OP_SUB;
+				break;
+			case '*':
+				type = TOKEN_OP_MUL;
+				break;
+			case '/':
+				type = TOKEN_OP_DIV;
+				break;
+			case '^':
+				type = TOKEN_OP_EXP;
+				break;
+			default:
+				type = TOKEN_EOF;
+			}
+			data.address = 0;
+		}
 
 		inline constexpr uint64_t GetAddress() const { return data.address; }
 		inline constexpr double GetLiteral() const { return data.value; }

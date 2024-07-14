@@ -7,6 +7,10 @@
 #include "parser.hpp"
 
 namespace funclib {
+	struct FunctionSet {
+		std::vector<Function> funcSet;
+		std::unordered_map<std::string, size_t> funcMap;
+	};
 
 	namespace detail {
 		enum _NativeFunctions {
@@ -267,16 +271,30 @@ namespace funclib {
 					argc = i < detail::NF_ATAN2 ? 1 : (i < detail::NF_NORMAL_DIST ? 2 : 3);
 				}
 				else {
-					argc = function_arg_counts[i];
+					argc = function_arg_counts[i - detail::NF_ASSOC_LAGUERRE];
 				}
 				m_nfxData.emplace_back(function_names[i], function_descriptions[i], i, argc);
+				all_fxs.insert(function_names[i]);
 			}
 		}
 
 		Function CreateFunction(const std::string& signature, const std::string& body) {
-			Tokenizer tokenizer(body);
+			Tokenizer body_tokens(body, all_fxs);
+			Tokenizer sig_tokens(signature, all_fxs);
 			Parser parser;
-			auto postfix = parser.ParseExpression(tokenizer.GetTokens());
+			std::string name;
+			std::vector<std::string> args, params;
+			
+			auto postfix = parser.ParseExpression(body_tokens.GetTokens());
+			bool res = parser.ParseSignature(sig_tokens.GetTokens(), name, args, params);
+			// To future me.
+			// handle errors
+			// write func eval
+			// write stack ops
+			// complete natives
+			// change calling convention
+			// no build errors
+			// parser complete
 
 			std::vector<Token> expr;
 			for (const auto& tk : postfix) {
@@ -288,31 +306,31 @@ namespace funclib {
 					expr.emplace_back(ResolveFunction(tk));
 					break;
 				case funclib::TOKEN_ID:
-					expr.emplace_back(-1);
+					expr.emplace_back((uint64_t) - 1); //// ATTENTION!!!!
 					break;
 				case funclib::TOKEN_LITERAL:
 					expr.emplace_back(std::stod(tk.GetText()));
 					break;
 				case funclib::TOKEN_OP_EXP:
-					expr.emplace_back(TOKEN_OP_EXP);
+					expr.emplace_back('^',false);
 					break;
 				case funclib::TOKEN_OP_MUL:
-					expr.emplace_back(TOKEN_OP_MUL);
+					expr.emplace_back('*', false);
 					break;
 				case funclib::TOKEN_OP_DIV:
-					expr.emplace_back(TOKEN_OP_DIV);
+					expr.emplace_back('/',false);
 					break;
 				case funclib::TOKEN_OP_ADD:
-					expr.emplace_back(TOKEN_OP_ADD);
+					expr.emplace_back('+',false);
 					break;
 				case funclib::TOKEN_OP_SUB:
-					expr.emplace_back(TOKEN_OP_SUB);
+					expr.emplace_back('-',false);
 					break;
 				case funclib::TOKEN_OP_UN_NEG:
-					expr.emplace_back(TOKEN_OP_UN_NEG);
+					expr.emplace_back('-',true);
 					break;
 				case funclib::TOKEN_OP_UN_POS:
-					expr.emplace_back(TOKEN_OP_UN_POS);
+					expr.emplace_back('+',true);
 					break;
 				default:
 					break;
@@ -322,6 +340,10 @@ namespace funclib {
 			Function fx;
 			fx.expr = expr;
 			fx.m_foriegnFx = m_fxs;
+			m_fxs.get()->funcSet.emplace_back(fx);
+			all_fxs.insert(name);
+
+			return fx;
 		}
 
 		double EvaluateString(const std::string& body) {
@@ -352,15 +374,11 @@ namespace funclib {
 
 			NFxData(const std::string& name, const std::string& desc, int idx, int argc):name(name), desc(desc),idx(idx),argc(argc){}
 		};
-
-		struct FunctionSet {
-			std::vector<Function> funcSet;
-			std::unordered_map<std::string, size_t> funcMap;
-		};
 		
 		std::shared_ptr<FunctionSet> m_fxs;
 		std::unordered_map<std::string, int> m_nfxMap;
 		std::vector<NFxData> m_nfxData;
+		std::unordered_set<std::string> all_fxs;
 
 		static constexpr const char* function_names[] = {"acos","acosh","asin","asinh","atan","atanh","cbrt","ceil","cos","cosh","erf","erfinv",
 			"erfc","exp","exp2","expm1","fabs","floor","lgamma","log","log10","log1p","log2","nearbyint","rint","round","sin","sinh","sqrt","tan",
