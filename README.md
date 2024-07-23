@@ -90,9 +90,9 @@ int main() {
 * Common logarithm (base 10) `log`
 * Logarithm of 1 plus x `log1p`
 * Binary logarithm (base 2) `log2`
-* Rounds to nearest integer, according to current rounding mode `nearbyint`
-* Rounds to nearest integer value, but returns as a double `rint`
-* Rounds to nearest integer value, halfway cases away from zero `round`
+* Rounds to the nearest integer `nearbyint`
+* Rounds to the nearest integer value `rint`
+* Rounds to the nearest integer, halfway cases away from zero `round`
 * Sine `sin`
 * Hyperbolic sine `sinh`
 * Square root `sqrt`
@@ -111,7 +111,7 @@ int main() {
 * nPr `npr`
 * nCr `ncr`
 
-### Probability Distributions
+### Probability Distributions Functions
 * Exponential distribution `exp_dist`
 * Chi squared distribution `chi2_dist`
 * T distribution `t_dist`
