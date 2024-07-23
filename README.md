@@ -83,8 +83,8 @@ int main() {
 * Hyperbolic cosine `cosh`
 * Exponential (e^x) `exp`
 * Exponential (2^x) `exp2`
-* Exponential minus 1 `expm1`
-* Absolute value `fabs`
+* Exponential minus 1 (e^x - 1) `expm1`
+* Absolute value `abs`
 * Floor `floor`
 * Natural logarithm (base e) `ln`
 * Common logarithm (base 10) `log`
