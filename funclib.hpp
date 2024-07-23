@@ -1470,7 +1470,7 @@ private:
 		std::string errorMsg;
 
 		static constexpr const char* function_names[] = {"acos","acosh","asin","asinh","atan","atanh","cbrt","ceil","cos","cosh","erf","erfinv",
-			"erfc","exp","exp2","expm1","fabs","floor","lngamma","ln","log","log1p","log2","nearbyint","rint","round","sin","sinh","sqrt","tan",
+			"erfc","exp","exp2","expm1","abs","floor","lngamma","ln","log","log1p","log2","nearbyint","rint","round","sin","sinh","sqrt","tan",
 			"tanh","gamma","trunc","atan2","fmod","pow","hypot","remainder","max","min","gcd","lcm","npr","ncr",
 			"exp_dist","chi2_dist","t_dist","normal_dist","gamma_dist","beta_dist","logistic_dist","cauchy_dist","weibull_dist","lognorm_dist","pareto_dist",
 			"assoc_laguerre","assoc_legendre","beta","comp_ellint_1","comp_ellint_2","comp_ellint_3","cyl_bessel_i","cyl_bessel_j","cyl_bessel_k",
