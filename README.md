@@ -2,10 +2,10 @@
 
 ## Description
 
-**funclib** is a dynamic mathematical function parsing and evaluation library designed to facilitate the definition and utilization of math functions at runtime. As a single header library, it is easy to integrate and use. Written in C++ for applications requiring flexible and efficient mathematical computations. It uses the common mathematical notations and semantics to describe the body of the function.
+**funclib** is a dynamic mathematical expression parsing and evaluation library designed to facilitate the definition and utilization of math functions at runtime. As a single header library, it is easy to integrate and use. Written in C++ for applications requiring flexible and efficient mathematical computations. It uses the common mathematical notations and semantics to describe the body of the function.
 funclib currently supports functions from Rⁿ to R¹ domains. 
 
-`funclib` comes pre-equipped with many common and useful mathematical functions. [List of predefined functions and operators]()
+`funclib` comes pre-equipped with many common and useful mathematical functions. [List of predefined functions and operators](https://github.com/privateDuck/funclib?tab=readme-ov-file#predefined-functions-and-operators)
 
 ## Usage
 
@@ -16,6 +16,10 @@ To use `funclib`, follow these steps:
 3. Call the `create` function with the function signature and function body as parameters.
 4. A `Function` object is returned.
 5. Call the `Function` object with the appropriate arguments.
+
+### Important!
+* To use the special math functions provided by the C++ STL, you must enable the C++17 standard `std=c++17`.
+* In MSVC, you also have to define `/Zc:__cplusplus` flag.
 
 ### Simple Example
 
@@ -139,8 +143,15 @@ int main() {
 * Spherical Neumann functions (n, x) `sph_neumann`
 
 
+## Examples and Benchmarks
+* You can find the source code for the following test case and the examples in the **tests** directory
 
 
+## Possible Improvements
+* Optimizing the expression.
+* Improving the expression evaluation procedure (possibly a bytecode interpreter)
+* Support for the complex domain.
+* Handling vector valued functions.
 
 
 
