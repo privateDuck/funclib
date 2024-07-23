@@ -46,6 +46,16 @@ int main() {
     funclib::Function fog = vm.CreateFunction("fog(x,y)", "f(g(x,y))");
     double result3 = fog(3, 4); // Should return 19^2 = 361
     std::cout << "fog(3, 4) = " << result3 << std::endl;
+
+    // You can also use a std::vector to call the function
+    std::vector<double> args = {3, 4};
+    result3 = fog(args);
+    std::cout << "fog(3, 4) = " << result3 << std::endl;
+
+    // It is also possible to set the arguments once and call the function multiple times
+    fog.SetArgs(3, 4); // Identical to fog.SetArgs(args)
+    result3 = fog.Call();
+    std::cout << "fog(3, 4) = " << result3 << std::endl;
 }
 ```
 
